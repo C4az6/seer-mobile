@@ -18,6 +18,21 @@ const routes = [
         path: '', // 子路由path为空的情况下会被当作默认子路由
         name: 'home',
         component: () => import('@/views/home')
+      },
+      {
+        path: '/qa',
+        name: 'qa',
+        component: () => import('@/views/qa')
+      },
+      {
+        path: '/video',
+        name: 'video',
+        component: () => import('@/views/video')
+      },
+      {
+        path: '/my',
+        name: 'my',
+        component: () => import('@/views/my')
       }
     ]
   }
