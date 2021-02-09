@@ -3,7 +3,7 @@
     <!-- 子路由出口 -->
     <router-view />
     <!-- 底部导航栏 -->
-    <van-button type="primary">Hello Vant :)</van-button>
+
   </div>
 </template>
 
