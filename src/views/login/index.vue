@@ -11,35 +11,50 @@
     <!-- nav-bar部分 end -->
 
     <!-- 表单部分 start -->
-    <van-cell-group>
-      <van-field
-        v-model="user.mobile"
-        icon-prefix="toutiao"
-        clearable
-        left-icon="shouji"
-        placeholder="请输入手机号"
-      />
-      <van-field
-        v-model="user.code"
-        clearable
-        icon-prefix="toutiao"
-        left-icon="yanzhengma"
-        placeholder="请输入验证码"
-      >
-        <template #button>
-          <van-button class="send-code" size="small" @click="handleSendCode">发送验证码</van-button>
-        </template>
-      </van-field>
-    </van-cell-group>
-    <!-- 表单部分 end -->
-    <div class="login-btn-wrap">
-      <van-button class="login-btn" block  @click="handleUserLogin">登录</van-button>
-    </div>
+    <van-form
+    @submit="onSubmit"
+    @failed="onFailed"
+    :show-error="false"
+    :show-error-message="false"
+    ref="form"
+    >
+      <van-cell-group>
+        <van-field
+          v-model="user.mobile"
+          icon-prefix="toutiao"
+          clearable
+          left-icon="shouji"
+          placeholder="请输入手机号"
+          type="tel"
+          name="mobile"
+          maxlength="11"
+          :rules="formRules.mobile"
+        />
+        <van-field
+          v-model="user.code"
+          clearable
+          icon-prefix="toutiao"
+          left-icon="yanzhengma"
+          placeholder="请输入验证码"
+          name="code"
+          maxlength="6"
+          :rules="formRules.code"
+        >
+          <template #button>
+            <van-button class="send-code" size="small" @click.prevent="handleSendCode">发送验证码</van-button>
+          </template>
+        </van-field>
+      </van-cell-group>
+      <!-- 表单部分 end -->
+      <div class="login-btn-wrap">
+        <van-button class="login-btn" block  native-type="submit">登录</van-button>
+      </div>
+    </van-form>
   </div>
 </template>
 
 <script>
-import { userLogin } from '@/api/user'
+import { userLogin, sendSms } from '@/api/user'
 export default {
   name: 'LoginIndex',
   components: {},
@@ -49,6 +64,17 @@ export default {
       user: {
         mobile: '13911111111',
         code: '246810'
+      },
+      // 表单验证规则
+      formRules: {
+        mobile: [
+          { required: true, message: '请输入手机号' },
+          { pattern: /^1[3|5|7|8|9]\d{9}$/, message: '手机号格式错误' }
+        ],
+        code: [
+          { required: true, message: '请输入验证码' },
+          { pattern: /^\d{6}$/, message: '验证码格式错误' }
+        ]
       }
     }
   },
@@ -57,9 +83,48 @@ export default {
   created () {},
   mounted () {},
   methods: {
+    // 提交表单验证失败函数
+    onFailed (error) {
+      this.$toast({
+        message: error.errors[0].message,
+        position: 'top'
+      })
+    },
+    // 提交表单验证通过函数
+    onSubmit (value) {
+      this.handleUserLogin()
+    },
     // 发送验证码函数
-    handleSendCode () {
-      console.log('发送验证码...')
+    async handleSendCode () {
+      try {
+        await this.$refs.form.validate('mobile')
+        console.log('验证通过')
+        const { data: res } = await sendSms(this.user.mobile)
+        console.log('send sms response: ', res)
+      } catch (err) {
+        // try 里面任何代码的错误都会进入 catch
+        // 不同的错误需要有不同的提示，那就需要进行判断
+        let message = ''
+        if (err && err.response && err.response.status === 429) {
+          // 发送短信失败的错误提示
+          message = '发送太频繁，请稍后重试'
+        } else if (err.name === 'mobile') {
+          // 表单验证失败
+          message = err.message
+        } else {
+          // 未知错误
+          message = '发送失败，请稍后重试'
+        }
+        this.$toast({
+          message,
+          position: 'top'
+        })
+      }
+      /*
+        1. 判断手机号是否存在
+        2. 验证手机号是否合法
+        3. 以上校验通过则允许发送
+      */
     },
     // 用户登录函数
     async handleUserLogin () {

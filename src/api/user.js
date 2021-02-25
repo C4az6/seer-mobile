@@ -7,3 +7,11 @@ export const userLogin = data => {
     data
   })
 }
+
+/* 获取短信验证码 */
+export const sendSms = data => {
+  return request({
+    url: `/app/v1_0/sms/codes/${data}`,
+    method: 'GET'
+  })
+}
