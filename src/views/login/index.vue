@@ -41,7 +41,18 @@
           :rules="formRules.code"
         >
           <template #button>
-            <van-button class="send-code" size="small" @click.prevent="handleSendCode">发送验证码</van-button>
+            <van-count-down
+            :time="1000 * 60"
+            v-if="isCountDownShow"
+            format="ss s"
+            @finish="isCountDownShow = false"
+             />
+            <van-button
+             v-else
+             class="send-code"
+             size="small"
+             @click.prevent="handleSendCode"
+             :loading="isSendSmsLoading">发送验证码</van-button>
           </template>
         </van-field>
       </van-cell-group>
@@ -61,6 +72,10 @@ export default {
   props: {},
   data () {
     return {
+      // 是否正在发送短信验证码
+      isSendSmsLoading: false,
+      // 是否显示倒计时
+      isCountDownShow: false,
       user: {
         mobile: '13911111111',
         code: '246810'
@@ -97,10 +112,21 @@ export default {
     // 发送验证码函数
     async handleSendCode () {
       try {
+        /*
+          1. 判断手机号是否存在
+          2. 验证手机号是否合法
+          3. 以上校验通过则允许发送
+        */
         await this.$refs.form.validate('mobile')
-        console.log('验证通过')
-        const { data: res } = await sendSms(this.user.mobile)
-        console.log('send sms response: ', res)
+        // 验证通过，发送请求获取短信验证码
+        /*
+          记住一个原则：任何和网络交互有关的视图都应该在网络请求期间禁用，防止请求过慢导致多次触发请求行为
+          这里给发送验证码添加一个loading效果，用来防止这种情况
+        */
+        this.isSendSmsLoading = true
+        await sendSms(this.user.mobile)
+        // 发送成功，显示倒计时
+        this.isCountDownShow = true
       } catch (err) {
         // try 里面任何代码的错误都会进入 catch
         // 不同的错误需要有不同的提示，那就需要进行判断
@@ -120,11 +146,8 @@ export default {
           position: 'top'
         })
       }
-      /*
-        1. 判断手机号是否存在
-        2. 验证手机号是否合法
-        3. 以上校验通过则允许发送
-      */
+      // 无论失败与否都需要关闭loading效果
+      this.isSendSmsLoading = false
     },
     // 用户登录函数
     async handleUserLogin () {
