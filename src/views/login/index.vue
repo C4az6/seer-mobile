@@ -41,12 +41,14 @@
           :rules="formRules.code"
         >
           <template #button>
-            <van-count-down
-            :time="1000 * 60"
-            v-if="isCountDownShow"
-            format="ss s"
-            @finish="isCountDownShow = false"
-             />
+            <van-button class="count-down-btn" type="default" size="small" disabled v-if="isCountDownShow">
+              <van-count-down
+                class="count-down"
+                :time="1000 * 60"
+                format="ss s"
+                @finish="isCountDownShow = false"
+              />
+            </van-button>
             <van-button
              v-else
              class="send-code"
@@ -188,5 +190,10 @@ export default {
 
   .van-cell {
     align-items: center;
+  }
+
+  .count-down-btn {
+    min-width: 50px;
+    height: 28px;
   }
 </style>
