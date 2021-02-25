@@ -33,12 +33,13 @@
     </van-cell-group>
     <!-- 表单部分 end -->
     <div class="login-btn-wrap">
-      <van-button class="login-btn" block  @click="handleSendCode">登录</van-button>
+      <van-button class="login-btn" block  @click="handleUserLogin">登录</van-button>
     </div>
   </div>
 </template>
 
 <script>
+import { userLogin } from '@/api/user'
 export default {
   name: 'LoginIndex',
   components: {},
@@ -46,8 +47,8 @@ export default {
   data () {
     return {
       user: {
-        mobile: '',
-        code: ''
+        mobile: '13911111111',
+        code: '246810'
       }
     }
   },
@@ -59,6 +60,25 @@ export default {
     // 发送验证码函数
     handleSendCode () {
       console.log('发送验证码...')
+    },
+    // 用户登录函数
+    async handleUserLogin () {
+      // 启动loading效果
+      this.$toast.loading({
+        duration: 0, // 持续时间，0表示持续展示不停止
+        forbidClick: true, // 是否禁止背景点击
+        message: '登录中...' // 提示消息
+      })
+      try {
+        const response = await userLogin(this.user)
+        console.log('登录成功', response)
+        this.$toast.success('登录成功')
+      } catch (error) {
+        if (error.response.status === 400) {
+          console.log('登录失败', error)
+          this.$toast.fail('登录失败,手机号或验证码错误')
+        }
+      }
     }
   }
 }
@@ -76,5 +96,9 @@ export default {
   .send-code {
     background-color: #6db4fb;
     color: #fff;
+  }
+
+  .van-cell {
+    align-items: center;
   }
 </style>
