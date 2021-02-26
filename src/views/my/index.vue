@@ -1,6 +1,6 @@
 <template>
   <div class="my-container">
-    <van-cell-group class="my-info">
+    <van-cell-group class="my-info" v-if="user">
       <van-cell
         title="单元格"
         value="内容"
@@ -48,6 +48,11 @@
         </van-grid-item>
       </van-grid>
     </van-cell-group>
+
+    <div v-else class="not-login">
+      <div @click="$router.push('/login')"><img class="mobile" src="./phone.png" /></div>
+      <div class="text">登录 / 注册</div>
+    </div>
     <!-- 收藏历史部分 start -->
     <van-grid :column-num="2" class="nav-grid mb5">
       <van-grid-item class="nav-grid-item" icon-prefix="toutiao" icon="shoucang" text="收藏" />
@@ -57,11 +62,12 @@
 
     <van-cell title="消息通知" is-link to="/" />
     <van-cell class="mb5" title="小智同学" is-link to="/" />
-    <van-cell class="login-out" title="退出登录" />
+    <van-cell v-if="user" class="login-out" title="退出登录" />
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   name: 'MyIndex',
   components: {},
@@ -69,7 +75,9 @@ export default {
   data () {
     return {}
   },
-  computed: {},
+  computed: {
+    ...mapState(['user']) // 将state里面的user数据映射到当前组件的data中方便使用
+  },
   watch: {},
   created () {},
   mounted () {},
@@ -156,6 +164,24 @@ export default {
   }
   .mb5 {
     margin-bottom: 5px;
+  }
+
+  .not-login {
+    height: 180px;
+    background: url('./banner.png') no-repeat;
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    .mobile {
+      width: 66px;
+      height: 66px;
+    }
+    .text {
+      font-size: 14px;
+      color: #fff;
+    }
   }
 }
 </style>
