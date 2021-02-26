@@ -12,12 +12,12 @@
 
     <!-- 表单部分 start -->
     <van-form
-    @submit="onSubmit"
-    @failed="onFailed"
-    :show-error="false"
-    :show-error-message="false"
-    ref="form"
-    >
+      @submit="onSubmit"
+      @failed="onFailed"
+      :show-error="false"
+      :show-error-message="false"
+      ref="form"
+      >
       <van-cell-group>
         <van-field
           v-model="user.mobile"
@@ -58,11 +58,11 @@
           </template>
         </van-field>
       </van-cell-group>
-      <!-- 表单部分 end -->
       <div class="login-btn-wrap">
         <van-button class="login-btn" block  native-type="submit">登录</van-button>
       </div>
     </van-form>
+      <!-- 表单部分 end -->
   </div>
 </template>
 
@@ -160,9 +160,11 @@ export default {
         message: '登录中...' // 提示消息
       })
       try {
-        const response = await userLogin(this.user)
-        console.log('登录成功', response)
+        const { data: res } = await userLogin(this.user)
+        console.log('登录成功', res)
         this.$toast.success('登录成功')
+        // 将后端返回的用户登录状态(token) 放到 Vuex 容器中
+        this.$store.commit('setUser', res.data)
       } catch (error) {
         if (error.response.status === 400) {
           console.log('登录失败', error)
