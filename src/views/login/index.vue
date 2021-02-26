@@ -165,6 +165,7 @@ export default {
         this.$toast.success('登录成功')
         // 将后端返回的用户登录状态(token) 放到 Vuex 容器中
         this.$store.commit('setUser', res.data)
+        this.$router.push('my')
       } catch (error) {
         if (error.response.status === 400) {
           console.log('登录失败', error)
