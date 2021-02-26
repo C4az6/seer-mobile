@@ -62,7 +62,7 @@
 
     <van-cell title="消息通知" is-link to="/" />
     <van-cell class="mb5" title="小智同学" is-link to="/" />
-    <van-cell v-if="user" class="login-out" title="退出登录" />
+    <van-cell v-if="user" class="login-out" @click="handleLogout" title="退出登录" />
   </div>
 </template>
 
@@ -81,7 +81,34 @@ export default {
   watch: {},
   created () {},
   mounted () {},
-  methods: {}
+  methods: {
+    // 退出登录函数
+    async handleLogout () {
+      // 提示用户是否确认退出
+      // Promise写法
+      /*       this.$dialog.confirm({
+        title: '退出提示',
+        message: '确认退出吗?'
+      }).then(_ => { // 确认执行这里
+        // 清除用户登录状态，因为Vuex中的状态是响应式的，页面会随着变化
+        this.$store.commit('setUser', null)
+      }).catch(err => { // 退出执行这里
+        console.log(err)
+      }) */
+      // async...await写法
+      try {
+        await this.$dialog.confirm({
+          title: '退出提示',
+          message: '确认退出吗?'
+        })
+        // 确认退出
+        console.log('用户确认退出.')
+        this.$store.commit('setUser', null)
+      } catch (err) {
+        // 用户取消退出
+      }
+    }
+  }
 }
 </script>
 
@@ -108,7 +135,7 @@ export default {
         color: #fff;
       }
       .update-btn {
-        height: 24px;
+        height: 26px;
         font-size: 10px;
         color: #666;
       }
