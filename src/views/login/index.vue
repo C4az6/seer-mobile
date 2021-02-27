@@ -79,7 +79,7 @@ export default {
       // 是否显示倒计时
       isCountDownShow: false,
       user: {
-        mobile: '13911111111',
+        mobile: '17090086870',
         code: '246810'
       },
       // 表单验证规则

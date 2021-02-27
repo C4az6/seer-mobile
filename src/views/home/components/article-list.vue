@@ -1,11 +1,30 @@
 <template>
-  <div class="article-list">文章列表</div>
+  <div class="article-list">
+    <!-- 文章列表 start -->
+    <van-list
+      v-model="loading"
+      :finished="finished"
+      finished-text="没有更多了"
+      @load="onLoad"
+    >
+    <article-item
+      :article="item"
+      v-for="(item, index) in articles"
+      :key="index"
+      ></article-item>
+    </van-list>
+    <!-- 文章列表 end -->
+  </div>
 </template>
 
 <script>
+import { getArticles } from '@/api/article'
+import articleItem from '@/components/article-item'
 export default {
   name: 'ArticleList',
-  components: {},
+  components: {
+    articleItem
+  },
   props: {
     channel: {
       type: Object,
@@ -13,14 +32,48 @@ export default {
     }
   },
   data () {
-    return {}
+    return {
+      list: [],
+      loading: false,
+      finished: false,
+      articles: [] // 文章列表数据
+    }
   },
   computed: {},
   watch: {},
   created () {},
   mounted () {},
-  methods: {}
+  methods: {
+    onLoad () {
+      console.log('onLoad...')
+      this.loadArticles()
+    },
+    // 加载新闻文章列表
+    async loadArticles () {
+      try {
+        const { data: response } = await getArticles({
+          channel_id: this.channel.id, // 频道ID
+          timestamp: +new Date(), // 当前时间戳
+          with_top: 1 // 1：包含置顶，0：不包含
+        })
+        console.log(response)
+        this.articles = response.data.results
+        this.finished = true
+      } catch (err) {
+        console.log(err)
+      }
+    }
+  }
 }
 </script>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+  .article-list {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 90px;
+    bottom: 50px;
+    overflow-y: auto;
+  }
+</style>
