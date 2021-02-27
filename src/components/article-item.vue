@@ -57,6 +57,7 @@ export default {
 .title {
   font-size: 16px;
   color: #3a3a3a;
+  word-break: break-all;
 }
 
 .van-cell__title {

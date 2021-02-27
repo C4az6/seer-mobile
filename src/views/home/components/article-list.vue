@@ -67,7 +67,6 @@ export default {
     },
     // 上拉加载
     onLoad () {
-      console.log('onLoad...')
       this.loadArticles()
     },
     // 加载新闻文章列表
