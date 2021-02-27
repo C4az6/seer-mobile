@@ -33,9 +33,9 @@ export default {
   },
   data () {
     return {
-      list: [],
       loading: false,
       finished: false,
+      preTimeStamp: null,
       articles: [] // 文章列表数据
     }
   },
@@ -53,12 +53,15 @@ export default {
       try {
         const { data: response } = await getArticles({
           channel_id: this.channel.id, // 频道ID
-          timestamp: +new Date(), // 当前时间戳
+          timestamp: this.preTimeStamp || +new Date(), // 当前时间戳
           with_top: 1 // 1：包含置顶，0：不包含
         })
-        console.log(response)
-        this.articles = response.data.results
-        this.finished = true
+        this.loading = false
+        this.articles.push(...response.data.results)
+        this.preTimeStamp = response.data.pre_timestamp
+        if (!response.data.results.length) {
+          this.finished = true
+        }
       } catch (err) {
         console.log(err)
       }
