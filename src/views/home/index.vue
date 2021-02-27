@@ -80,5 +80,17 @@ export default {
         font-size: 16px;
       }
     }
+
+    /deep/ .van-tab {
+      border-right: 1px solid #edeff3;
+      border-bottom: 1px solid #edeff3;
+    }
+
+    /deep/ .van-tabs__line {
+      width: 15px;
+      height: 4px;
+      bottom: 20px;
+      background-color: #3296fa;
+    }
   }
 </style>
