@@ -1,14 +1,33 @@
 <template>
   <div class="article-item">
     <van-cell>
-      <div slot="title">
-        {{article.title}}
+      <div slot="title" class="title van-multi-ellipsis--l3">
+        {{ article.title }}
       </div>
       <div slot="label">
-        <span>{{article.aut_name}}</span>
-        <span>{{article.comm_count}}评论</span>
-        <span>{{article.pubdate}}</span>
+        <div class="cover-wrap" v-if="article.cover.type === 3">
+            <van-image
+              class="cover-item"
+              fit="cover"
+              v-for="(item, index) in article.cover.images"
+              :key="index"
+              :src="item"
+            />
+        </div>
+
+        <div class="label-wrap">
+          <span>{{ article.aut_name }}</span>
+          <span>{{ article.comm_count }}评论</span>
+          <span>{{ article.pubdate }}</span>
+        </div>
       </div>
+      <!-- 默认插槽名字叫 default，可以省略不写 -->
+      <van-image
+        class="right-cover"
+        v-if="article.cover.type === 1"
+        fit="cover"
+        :src="article.cover.images[0]"
+      />
     </van-cell>
   </div>
 </template>
@@ -34,4 +53,33 @@ export default {
 }
 </script>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+.title {
+  font-size: 16px;
+  color: #3a3a3a;
+}
+
+/deep/ .van-cell__value {
+  flex: unset;
+  width: 116px;
+  height: 73px;
+  margin-left: 15px;
+}
+
+.right-cover {
+  width: 116px;
+  height: 73px;
+}
+
+.cover-wrap {
+  display: flex;
+  padding: 15px 0;
+  .cover-item {
+    flex: 1;
+    height: 73px;
+    &:not(last-child) {
+      padding-right: 4px;
+    }
+  }
+}
+</style>
