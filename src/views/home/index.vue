@@ -26,8 +26,15 @@
       <!-- 文章列表组件 -->
       <article-list :channel="item"></article-list>
       </van-tab>
+      <div slot="nav-right" class="menu-icon" @click="channelMenuShow=true">
+        <van-icon name="wap-nav"/>
+      </div>
     </van-tabs>
     <!-- 频道列表部分 end -->
+
+    <!-- 频道菜单弹出层 start -->
+    <van-popup v-model="channelMenuShow" position="bottom" :style="{ height: '100%' }" />
+    <!-- 频道菜单弹出层 end -->
   </div>
 </template>
 
@@ -42,6 +49,7 @@ export default {
   props: {},
   data () {
     return {
+      channelMenuShow: false, // 频道菜单弹出层是否显示
       channels: [], // 用户频道列表
       active: 0 // tab标签页默认激活项
     }
@@ -91,6 +99,29 @@ export default {
       height: 4px;
       bottom: 20px;
       background-color: #3296fa;
+    }
+
+    /deep/.van-tabs__nav--complete {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    /deep/.van-tabs__wrap--scrollable .van-tab {
+      padding: 0;
+      flex: 1 0 20%;
+    }
+
+    .menu-icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: fixed;
+      top: 45;
+      right: 0;
+      width: 45px;
+      height: 43px;
+      background-color: #fff;
+      opacity: .8;
     }
   }
 </style>
