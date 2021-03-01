@@ -26,6 +26,9 @@
       <!-- 文章列表组件 -->
       <article-list :channel="item"></article-list>
       </van-tab>
+      <!-- 用于给Tab标签占位 -->
+      <div slot="nav-right" class="menu-icon-placeholder"></div>
+
       <div slot="nav-right" class="menu-icon" @click="channelMenuShow=true">
         <van-icon name="wap-nav"/>
       </div>
@@ -33,7 +36,13 @@
     <!-- 频道列表部分 end -->
 
     <!-- 频道菜单弹出层 start -->
-    <van-popup v-model="channelMenuShow" position="bottom" :style="{ height: '100%' }" />
+    <van-popup
+      v-model="channelMenuShow"
+      position="bottom"
+      class="channel-popup-wrap"
+      closeable
+      close-icon-position="top-left"
+    />
     <!-- 频道菜单弹出层 end -->
   </div>
 </template>
@@ -108,7 +117,7 @@ export default {
 
     /deep/.van-tabs__wrap--scrollable .van-tab {
       padding: 0;
-      flex: 1 0 20%;
+      flex: 1 0 22%;
     }
 
     .menu-icon {
@@ -116,12 +125,29 @@ export default {
       justify-content: center;
       align-items: center;
       position: fixed;
-      top: 45;
       right: 0;
-      width: 45px;
+      width: 33px;
       height: 43px;
       background-color: #fff;
-      opacity: .8;
+      opacity: .9;
+      &::before {
+        content: '';
+        position: absolute;
+        left: -1px;
+        width: 1px;
+        height: 43px;
+        background-image: linear-gradient(#f1f1f1, #cdcdcd,#cdcdcd, #f1f1f1);
+      }
+    }
+
+    .channel-popup-wrap {
+      height: 100%;
+    }
+
+    .menu-icon-placeholder {
+      width: 33px;
+      height: 43px;
+      flex-shrink: 0;
     }
   }
 </style>
