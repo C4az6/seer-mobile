@@ -42,7 +42,9 @@
       class="channel-popup-wrap"
       closeable
       close-icon-position="top-left"
-    />
+    >
+      <ChannelEdit :user-channels="channels"></ChannelEdit>
+    </van-popup>
     <!-- 频道菜单弹出层 end -->
   </div>
 </template>
@@ -50,10 +52,12 @@
 <script>
 import { getUserChannels } from '@/api/user'
 import ArticleList from './components/article-list'
+import ChannelEdit from './components/channel-edit'
 export default {
   name: 'HomeIndex',
   components: {
-    ArticleList
+    ArticleList,
+    ChannelEdit
   },
   props: {},
   data () {
