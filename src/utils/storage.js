@@ -24,7 +24,7 @@ export const setItem = (k, v) => {
 }
 
 // 删除本地存储指定数据
-export const removeItem = (k) => {
+export const removeItem = k => {
   window.localStorage.removeItem(k)
 }
 
