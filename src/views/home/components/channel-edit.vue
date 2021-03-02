@@ -17,7 +17,7 @@
     <van-cell title="频道推荐" center class="recommend-wrap" :border="false"> </van-cell>
     <div class="all-channel-wrap">
       <van-grid :gutter="10">
-        <van-grid-item v-for="(item, index) in allChannels" :key="index" :text="item.name" />
+        <van-grid-item v-for="(item, index) in recommendChannels" :key="index" :text="item.name" />
       </van-grid>
     </div>
   </div>
@@ -53,6 +53,12 @@ export default {
       console.log(data)
       this.allChannels = data.channels
       // 使用所有频道减去用户频道就能算出推荐频道的数据
+      // 思路：从所有频道数据中筛选出不为用户频道的数据
+      this.recommendChannels = this.allChannels.filter(item => {
+        return !this.userChannels.find(item2 => {
+          return item2.name === item.name
+        })
+      })
     }
 
   }
