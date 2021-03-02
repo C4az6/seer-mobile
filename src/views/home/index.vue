@@ -43,7 +43,12 @@
       closeable
       close-icon-position="top-left"
     >
-      <ChannelEdit :user-channels="channels"></ChannelEdit>
+      <ChannelEdit
+        :user-channels="channels"
+        :tabActiveIndex="active"
+        @onClose="handlePopupClose"
+        @onDelete="handleDelete"
+      />
     </van-popup>
     <!-- 频道菜单弹出层 end -->
   </div>
@@ -62,9 +67,9 @@ export default {
   props: {},
   data () {
     return {
-      channelMenuShow: false, // 频道菜单弹出层是否显示
+      channelMenuShow: true, // 频道菜单弹出层是否显示
       channels: [], // 用户频道列表
-      active: 0 // tab标签页默认激活项
+      active: 3 // tab标签页默认激活项
     }
   },
   computed: {},
@@ -74,6 +79,16 @@ export default {
   },
   mounted () {},
   methods: {
+    handleDelete (index) {
+      console.log(index)
+      this.active--
+    },
+    // 弹出层关闭函数
+    handlePopupClose (index) {
+      this.channelMenuShow = false
+      this.active = index
+    },
+
     // 获取用户频道列表
     async loadUserChannels () {
       try {
