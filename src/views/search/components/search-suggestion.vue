@@ -1,11 +1,14 @@
 <template>
   <div class="search-suggestion">
     <van-cell
-      :title="item"
       icon="search"
       v-for="(item, index) in searchSuggestionList"
       :key="index"
-    />
+      >
+      <div slot="title">
+        <span v-html="highlight(item)"></span>
+      </div>
+    </van-cell>
   </div>
 </template>
 
@@ -29,12 +32,6 @@ export default {
   },
   computed: {},
   watch: {
-    // Vue官网对watch的介绍：
-    // 属性名：要监视的数据的名称，这种写法的缺点是第一次不会触发。
-    /* searchValue () {
-      console.log(123)
-    } */
-
     // 监听的完整写法
     searchValue: {
       // 当数据发生变化则会执行 handler 处理函数
@@ -59,7 +56,24 @@ export default {
       } catch (error) {
         console.log(error)
       }
-    }, 1000)
+    }, 200),
+
+    // 对返回的联想建议进行高亮处理
+    highlight (str) {
+      // /gi是全局匹配并且不区分大小写
+      /*
+        正则表达式 /中间的内容/ 都会当作正则匹配模式字符串来处理
+        错误的写法：/this.searchValue/gi
+        RegExp 是正则表达式的构造函数
+          参数1：字符串
+          参数2：匹配模式
+          返回值：正则对象
+      */
+      return str.replace(
+        new RegExp(this.searchValue, 'gi'),
+        `<span style="color: red">${this.searchValue}</span>`
+      )
+    }
   }
 }
 </script>
