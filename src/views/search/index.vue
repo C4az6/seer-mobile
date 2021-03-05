@@ -20,7 +20,10 @@
     <!-- 搜索结果组件 end -->
 
     <!-- 搜索联想建议组件 start -->
-    <search-suggestion v-else-if="searchValue" />
+    <search-suggestion
+      v-else-if="searchValue"
+      :search-value="searchValue"
+       />
     <!-- 搜索联想建议组件 end -->
 
     <!-- 搜索历史组件 start -->
