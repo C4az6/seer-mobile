@@ -17,15 +17,15 @@
 
     <!-- 搜索历史组件 start -->
     <!-- 搜索文本为空时显示搜索历史组件 -->
-    <search-history v-if="!searchValue"></search-history>
+    <search-history v-if="!searchValue"/>
     <!-- 搜索历史组件 end -->
 
     <!-- 搜索联想建议组件 start -->
-    <search-suggestion v-else-if="searchValue"></search-suggestion>
+    <search-suggestion v-else-if="searchValue"/>
     <!-- 搜索联想建议组件 end -->
 
     <!-- 搜索结果组件 start -->
-    <search-result v-else></search-result>
+    <search-result/>
     <!-- 搜索结果组件 end -->
   </div>
 </template>
