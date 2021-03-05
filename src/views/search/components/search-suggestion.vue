@@ -1,11 +1,17 @@
 <template>
   <div class="search-suggestion">
-    <van-cell :title="item" icon="search" v-for="(item, index) in searchSuggestionList" :key="index"/>
+    <van-cell
+      :title="item"
+      icon="search"
+      v-for="(item, index) in searchSuggestionList"
+      :key="index"
+    />
   </div>
 </template>
 
 <script>
 import { getSearchSuggestion } from '@/api/search'
+import { debounce } from 'lodash'
 export default {
   name: 'SearchSuggestion',
   components: {},
@@ -42,14 +48,18 @@ export default {
   mounted () {},
   methods: {
     // 加载搜索联想建议
-    async loadSearchSuggestion () {
+    // debounce 函数
+    // 参数1：函数
+    // 参数2：防抖时间
+    // 返回值：防抖之后的函数，和参数1功能是一样的
+    loadSearchSuggestion: debounce(async function () {
       try {
         const { data: response } = await getSearchSuggestion(this.searchValue)
         this.searchSuggestionList = response.data.options
       } catch (error) {
         console.log(error)
       }
-    }
+    }, 1000)
   }
 }
 </script>
