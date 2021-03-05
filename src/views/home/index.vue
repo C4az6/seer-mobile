@@ -10,6 +10,7 @@
           type="info"
           round
           size="small"
+          @click="$router.push('/search')"
         >
         搜索
         </van-button>
@@ -69,7 +70,7 @@ export default {
   props: {},
   data () {
     return {
-      channelMenuShow: true, // 频道菜单弹出层是否显示
+      channelMenuShow: false, // 频道菜单弹出层是否显示
       channels: [], // 用户频道列表
       active: 3 // tab标签页默认激活项
     }
