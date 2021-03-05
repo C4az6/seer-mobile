@@ -1,5 +1,5 @@
 <template>
-  <div class="search-result-container">
+  <div class="search-result">
     <van-list
       v-model="loading"
       :finished="finished"
@@ -49,4 +49,13 @@ export default {
 }
 </script>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+.search-result {
+  position: fixed;
+  top: 54px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
+}
+</style>

@@ -15,18 +15,18 @@
     </form>
     <!-- 搜索框 end -->
 
-    <!-- 搜索历史组件 start -->
-    <!-- 搜索文本为空时显示搜索历史组件 -->
-    <search-history v-if="!searchValue"/>
-    <!-- 搜索历史组件 end -->
+    <!-- 搜索结果组件 start -->
+    <search-result v-if="isResultShow" />
+    <!-- 搜索结果组件 end -->
 
     <!-- 搜索联想建议组件 start -->
-    <search-suggestion v-else-if="searchValue"/>
+    <search-suggestion v-else-if="searchValue" />
     <!-- 搜索联想建议组件 end -->
 
-    <!-- 搜索结果组件 start -->
-    <search-result/>
-    <!-- 搜索结果组件 end -->
+    <!-- 搜索历史组件 start -->
+    <search-history v-else />
+    <!-- 搜索历史组件 end -->
+
   </div>
 </template>
 
@@ -44,6 +44,7 @@ export default {
   props: {},
   data () {
     return {
+      isResultShow: false, // 是否有搜索结果
       searchValue: '' // 搜索文本内容
     }
   },
@@ -56,6 +57,7 @@ export default {
     // 监听搜索事件
     onSearch () {
       console.log('onSearch...')
+      this.isResultShow = true
     }
   }
 }
