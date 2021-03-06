@@ -6,21 +6,32 @@
       finished-text="没有更多了"
       @load="onLoad"
     >
-      <van-cell v-for="item in list" :key="item" :title="item" />
+      <van-cell v-for="(item, index) in list" :key="index" :title="item.title" />
     </van-list>
   </div>
 </template>
 
 <script>
+import { getSearchResult } from '@/api/search'
 export default {
   name: 'SearchResult',
   components: {},
-  props: {},
+  props: {
+    searchValue: {
+      type: String,
+      require: true
+    }
+  },
   data () {
     return {
       list: [],
       loading: false,
-      finished: false
+      finished: false,
+      params: {
+        page: 1,
+        perPage: 10,
+        q: this.searchValue
+      }
     }
   },
   computed: {},
@@ -28,22 +39,19 @@ export default {
   created () {},
   mounted () {},
   methods: {
-    onLoad () {
-      // 异步更新数据
-      // setTimeout 仅做示例，真实场景中一般为 ajax 请求
-      setTimeout(() => {
-        for (let i = 0; i < 10; i++) {
-          this.list.push(this.list.length + 1)
-        }
-
-        // 加载状态结束
-        this.loading = false
-
-        // 数据全部加载完成
-        if (this.list.length >= 40) {
-          this.finished = true
-        }
-      }, 1000)
+    // 加载搜索结果
+    async onLoad () {
+      const { data: response } = await getSearchResult(this.params)
+      console.log('response: ', response)
+      this.list = [...this.list, ...response.data.results]
+      this.loading = false
+      if (response.data.results.length) {
+        // 还有数据,请求下一页
+        this.params.page++
+      } else {
+        // 没有数据了
+        this.finished = true
+      }
     }
   }
 }

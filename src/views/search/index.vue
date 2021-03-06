@@ -16,7 +16,10 @@
     <!-- 搜索框 end -->
 
     <!-- 搜索结果组件 start -->
-    <search-result v-if="isResultShow" />
+    <search-result
+      v-if="isResultShow"
+      :search-value="searchValue"
+     />
     <!-- 搜索结果组件 end -->
 
     <!-- 搜索联想建议组件 start -->
