@@ -8,19 +8,7 @@
         <span @click="isDeleteStatus = false">完成</span>
       </div>
     </van-cell>
-    <van-cell title="Vue">
-      <van-icon name="close" />
-    </van-cell>
-    <van-cell title="React">
-      <van-icon name="close" />
-    </van-cell>
-    <van-cell title="Express">
-      <van-icon name="close" />
-    </van-cell>
-    <van-cell title="Koa">
-      <van-icon name="close" />
-    </van-cell>
-    <van-cell title="Egg">
+    <van-cell v-for="(item, index) in searchHistory" :key="index" :title="item">
       <van-icon name="close" />
     </van-cell>
   </div>
@@ -30,7 +18,12 @@
 export default {
   name: 'SearchHistory',
   components: {},
-  props: {},
+  props: {
+    searchHistory: {
+      type: Array,
+      require: true
+    }
+  },
   data () {
     return {
       isDeleteStatus: false // 是否处于删除状态

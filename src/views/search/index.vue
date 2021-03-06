@@ -32,7 +32,7 @@
     <!-- 搜索联想建议组件 end -->
 
     <!-- 搜索历史组件 start -->
-    <search-history v-else />
+    <search-history v-else :searchHistory="searchHistory"/>
     <!-- 搜索历史组件 end -->
 
   </div>
@@ -52,6 +52,7 @@ export default {
   props: {},
   data () {
     return {
+      searchHistory: [], // 搜索历史记录
       isResultShow: false, // 是否有搜索结果
       searchValue: '' // 搜索文本内容
     }
@@ -64,9 +65,16 @@ export default {
   methods: {
     // 监听搜索事件
     onSearch (searchValue) {
-      console.log(searchValue)
       this.searchValue = searchValue
       this.isResultShow = true
+      // 保存历史记录
+      const index = this.searchHistory.indexOf(searchValue)
+      if (index !== -1) {
+        // 有重复历史记录，去重
+        this.searchHistory.splice(index, 1)
+      }
+      // 把最新搜索历史记录放到顶部
+      this.searchHistory.unshift(searchValue)
     }
   }
 }
