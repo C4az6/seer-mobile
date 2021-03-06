@@ -18,3 +18,11 @@ export const getSearchResult = params => {
     params
   })
 }
+
+// 获取搜索历史记录
+export const getSearchHistory = _ => {
+  return request({
+    url: '/app/v1_0/search/histories',
+    method: 'GET'
+  })
+}

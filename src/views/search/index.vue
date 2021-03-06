@@ -42,6 +42,9 @@
 import searchHistory from './components/search-history'
 import searchSuggestion from './components/search-suggestion'
 import searchResult from './components/search-result'
+import { getSearchHistory } from '@/api/search'
+import { setItem, getItem } from '@/utils/storage'
+import { mapState } from 'vuex'
 export default {
   name: 'SearchIndex',
   components: {
@@ -57,12 +60,31 @@ export default {
       searchValue: '' // 搜索文本内容
     }
   },
-  computed: {},
+  computed: {
+    ...mapState(['user'])
+  },
   watch: {},
-  created () {},
+  created () {
+    this.loadSearchHistory()
+  },
   mounted () {
   },
   methods: {
+    // 加载历史记录
+    async loadSearchHistory () {
+      /*
+        因为后端存储的历史记录太少了，只有4条，
+        所以我们这里让后端返回的历史记录和本地的历史记录合并到一起
+      */
+      let searchHistory = getItem('search-histories') || []
+      if (this.user) {
+        const { data: response } = await getSearchHistory()
+        // 合并数组
+        searchHistory = [...new Set([...searchHistory, ...response.data.keywords])]
+      }
+      this.searchHistory = searchHistory
+    },
+
     // 监听搜索事件
     onSearch (searchValue) {
       this.searchValue = searchValue
@@ -75,6 +97,8 @@ export default {
       }
       // 把最新搜索历史记录放到顶部
       this.searchHistory.unshift(searchValue)
+      // 将历史记录持久化到本地
+      setItem('search-histories', this.searchHistory)
     }
   }
 }
