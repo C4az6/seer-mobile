@@ -9,8 +9,9 @@
         v-model="searchValue"
         show-action
         placeholder="请输入搜索关键词"
-        @search="onSearch"
+        @search="onSearch(searchValue)"
         @cancel="$router.back()"
+        @focus="isResultShow = false"
       />
     </form>
     <!-- 搜索框 end -->
@@ -26,6 +27,7 @@
     <search-suggestion
       v-else-if="searchValue"
       :search-value="searchValue"
+      @search="onSearch"
        />
     <!-- 搜索联想建议组件 end -->
 
@@ -61,8 +63,9 @@ export default {
   },
   methods: {
     // 监听搜索事件
-    onSearch () {
-      console.log('onSearch...')
+    onSearch (searchValue) {
+      console.log(searchValue)
+      this.searchValue = searchValue
       this.isResultShow = true
     }
   }
