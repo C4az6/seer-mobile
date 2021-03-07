@@ -36,7 +36,7 @@
     v-else
     :searchHistory="searchHistory"
     @onDelete="handleDeleteHistoryItem"
-    @onDeleteAll="handleDeleteHistoryAll"
+    @onDeleteAll="searchHistory = $event"
     @search="onSearch"
     />
     <!-- 搜索历史组件 end -->
@@ -68,24 +68,22 @@ export default {
   computed: {
     ...mapState(['user'])
   },
-  watch: {},
+  watch: {
+    // 监视搜索历史记录的变化，更新到本地存储
+    searchHistory () {
+      setItem('search-histories', this.searchHistory)
+    }
+  },
   created () {
     this.loadSearchHistory()
   },
   mounted () {
   },
   methods: {
-    // 删除全部历史记录
-    handleDeleteHistoryAll () {
-      this.searchHistory = []
-      setItem('search-histories', [])
-    },
 
     // 删除单项历史记录
     handleDeleteHistoryItem (index) {
       this.searchHistory.splice(index, 1)
-      // 更新localStorage
-      setItem('search-histories', this.searchHistory)
     },
 
     // 加载历史记录
@@ -105,8 +103,6 @@ export default {
       }
       // 把最新搜索历史记录放到顶部
       this.searchHistory.unshift(searchValue)
-      // 将历史记录持久化到本地
-      setItem('search-histories', this.searchHistory)
     }
   }
 }
