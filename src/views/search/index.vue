@@ -37,6 +37,7 @@
     :searchHistory="searchHistory"
     @onDelete="handleDeleteHistoryItem"
     @onDeleteAll="handleDeleteHistoryAll"
+    @search="onSearch"
     />
     <!-- 搜索历史组件 end -->
 
