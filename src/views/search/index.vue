@@ -32,7 +32,12 @@
     <!-- 搜索联想建议组件 end -->
 
     <!-- 搜索历史组件 start -->
-    <search-history v-else :searchHistory="searchHistory"/>
+    <search-history
+    v-else
+    :searchHistory="searchHistory"
+    @onDelete="handleDeleteHistoryItem"
+    @onDeleteAll="handleDeleteHistoryAll"
+    />
     <!-- 搜索历史组件 end -->
 
   </div>
@@ -42,7 +47,6 @@
 import searchHistory from './components/search-history'
 import searchSuggestion from './components/search-suggestion'
 import searchResult from './components/search-result'
-import { getSearchHistory } from '@/api/search'
 import { setItem, getItem } from '@/utils/storage'
 import { mapState } from 'vuex'
 export default {
@@ -70,19 +74,22 @@ export default {
   mounted () {
   },
   methods: {
+    // 删除全部历史记录
+    handleDeleteHistoryAll () {
+      this.searchHistory = []
+      setItem('search-histories', [])
+    },
+
+    // 删除单项历史记录
+    handleDeleteHistoryItem (index) {
+      this.searchHistory.splice(index, 1)
+      // 更新localStorage
+      setItem('search-histories', this.searchHistory)
+    },
+
     // 加载历史记录
     async loadSearchHistory () {
-      /*
-        因为后端存储的历史记录太少了，只有4条，
-        所以我们这里让后端返回的历史记录和本地的历史记录合并到一起
-      */
-      let searchHistory = getItem('search-histories') || []
-      if (this.user) {
-        const { data: response } = await getSearchHistory()
-        // 合并数组
-        searchHistory = [...new Set([...searchHistory, ...response.data.keywords])]
-      }
-      this.searchHistory = searchHistory
+      this.searchHistory = getItem('search-histories') || []
     },
 
     // 监听搜索事件

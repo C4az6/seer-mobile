@@ -1,14 +1,19 @@
 <template>
   <div class="search-history-container">
     <van-cell title="搜索历史" >
-      <van-icon name="delete-o" v-if="!isDeleteStatus" @click="isDeleteStatus = !isDeleteStatus"/>
+      <van-icon name="delete-o" v-if="!isDeleteStatus" @click="isDeleteStatus = true"/>
       <div v-else>
-        <span @click="handleRemoveAllHistory">全部删除</span>
+        <span @click="$emit('onDeleteAll')">全部删除</span>
         &nbsp;&nbsp;&nbsp;&nbsp;
         <span @click="isDeleteStatus = false">完成</span>
       </div>
     </van-cell>
-    <van-cell v-for="(item, index) in searchHistory" :key="index" :title="item">
+    <van-cell
+     v-for="(item, index) in searchHistory"
+     :key="index"
+     :title="item"
+     @click="$emit('onDelete', index)"
+     >
       <van-icon name="close" />
     </van-cell>
   </div>
@@ -36,7 +41,7 @@ export default {
   methods: {
     // 删除全部历史记录
     handleRemoveAllHistory () {
-      console.log('删除全部历史记录...')
+
     }
   }
 }
