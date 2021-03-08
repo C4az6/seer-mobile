@@ -3,10 +3,10 @@
     <!-- nav-bar部分 start -->
     <div class="nav-bar-wrap">
       <van-nav-bar
-      title="注册/登录"
-      left-arrow
-      @click-left="$router.back()"
-    />
+        title="注册/登录"
+        left-arrow
+        @click-left="$router.back()"
+      />
     </div>
     <!-- nav-bar部分 end -->
 

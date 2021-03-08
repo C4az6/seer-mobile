@@ -1,7 +1,10 @@
 <template>
   <div class="article-item">
-    <van-cell>
-      <div slot="title" class="title van-multi-ellipsis--l3">
+    <van-cell is-link :to="{name: 'article', params: {articleId: this.article.art_id}}">
+      <div
+        slot="title"
+        class="title van-multi-ellipsis--l3"
+      >
         {{ article.title }}
       </div>
       <div slot="label">
