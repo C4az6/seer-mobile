@@ -36,7 +36,11 @@
       <!-- 用户信息 end -->
 
       <!-- 文章详细内容 start -->
-      <div class="article-detail"></div>
+      <div class="markdown-body">
+        <h2>标题二</h2>
+        <h3>标题三</h3>
+        <h3>标题三</h3>
+      </div>
       <!-- 文章详细内容 end -->
 
       <!-- 文章标题 end' -->
@@ -74,6 +78,8 @@ export default {
 </script>
 
 <style scoped lang="less">
+@import url('./github-markdown.css');
+
 .article-content {
   .title {
     font-size: 20px;
@@ -97,5 +103,9 @@ export default {
       font-size: 12px;
     }
   }
+}
+.markdown-body {
+  background-color: #fff;
+  padding: 14px;
 }
 </style>
