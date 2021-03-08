@@ -10,36 +10,34 @@
     <div class="article-content">
       <!-- 文章标题 start -->
       <h1 class="title">
-        开发者为 Google 淘汰项目搭建「墓园」，里面可能有你曾用过的产品
+        {{article.title}}
       </h1>
 
       <!-- 用户信息 start -->
       <van-cell center class="user-info-wrap">
-        <div class="username" slot="title">教师节快乐</div>
-        <div class="pubdate" slot="label">2 年前</div>
+        <div class="username" slot="title">{{article.aut_name}}</div>
+        <div class="pubdate" slot="label">{{article.pubdate | relativeTime}}</div>
         <van-image
           slot="icon"
           class="avatar"
-          src="https://img01.yzcdn.cn/vant/cat.jpeg"
+          :src="article.aut_photo"
           round
           fit="cover"
         />
         <van-button
           class="attention-btn"
-          icon="plus"
-          type="info"
+          :icon="article.is_followed?'':'plus'"
+          :type="article.is_followed?'default':'info'"
           size="small"
           round
-          >关注</van-button
+          >{{article.is_followed?'已关注':'关注'}}</van-button
         >
       </van-cell>
       <!-- 用户信息 end -->
 
       <!-- 文章详细内容 start -->
-      <div class="markdown-body">
-        <h2>标题二</h2>
-        <h3>标题三</h3>
-        <h3>标题三</h3>
+      <div class="markdown-body" v-html="article.content">
+
       </div>
       <!-- 文章详细内容 end -->
 
@@ -50,6 +48,7 @@
 </template>
 
 <script>
+import { getArticleDetail } from '@/api/article'
 /*
   在组件中获取动态路由参数：
     方式一：this.$route.params.articleId
@@ -65,15 +64,25 @@ export default {
     }
   },
   data () {
-    return {}
+    return {
+      article: {} // 文章详情内容
+    }
   },
   computed: {},
   watch: {},
   created () {
     console.log('article id ', this.articleId)
+    this.loadArticleDetail()
   },
   mounted () {},
-  methods: {}
+  methods: {
+    // 获取文章详情
+    async loadArticleDetail () {
+      const { data: response } = await getArticleDetail(this.articleId)
+      console.log('get artilce response: ', response)
+      this.article = response.data
+    }
+  }
 }
 </script>
 
