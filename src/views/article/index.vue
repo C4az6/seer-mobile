@@ -30,7 +30,7 @@
           :type="article.is_followed?'default':'info'"
           size="small"
           round
-          :loading="loading"
+          :loading="isFollowLoading"
           @click="handleFollowBtnClick"
           >{{article.is_followed?'已关注':'关注'}}</van-button
         >
@@ -42,19 +42,46 @@
         class="markdown-body"
         v-html="article.content"
         ref="article-content"
-      >
-
-      </div>
+      ></div>
       <!-- 文章详细内容 end -->
 
-      <!-- 文章标题 end' -->
+      <!-- 文章标题 end -->
     </div>
     <!-- 文章内容 end -->
+
+    <!-- 文章底部内容 start -->
+    <div class="article-bottom">
+      <van-button
+        class="comment-btn"
+        type="default"
+        round
+
+      >
+        写评论
+      </van-button>
+
+      <van-icon name="comment-o" />
+
+      <van-icon
+      :name="article.is_collected?'star':'star-o'"
+      :color="article.is_collected?'#ffa500':''"
+      @click="handleCollectArticle"
+      />
+
+      <van-icon
+        :name="article.attitude===1?'good-job':'good-job-o'"
+        :color="article.attitude===1?'#3296fa':''"
+        @click="handleLikeClick"
+       />
+
+      <van-icon name="share" />
+    </div>
+    <!-- 文章底部内容 end -->
   </div>
 </template>
 
 <script>
-import { getArticleDetail } from '@/api/article'
+import { getArticleDetail, collectArticle, cancelCollectArticle, likings, cancelLike } from '@/api/article'
 import { cancelFollowUser, followUser } from '@/api/user'
 import { ImagePreview } from 'vant'
 
@@ -74,7 +101,7 @@ export default {
   },
   data () {
     return {
-      loading: false, // 关注用户loading
+      isFollowLoading: false, // 关注用户loading
       article: null // 文章详情内容
     }
   },
@@ -86,20 +113,58 @@ export default {
   mounted () {
   },
   methods: {
+    // 给文章点赞或者取消点赞操作
+    async handleLikeClick () {
+      this.$toast.loading({
+        message: '操作中...',
+        forbidClick: true,
+        duration: 0,
+        loadingType: 'spinner'
+      })
+      if (this.article.attitude === 1) {
+        // 取消点赞
+        await cancelLike(this.article.art_id)
+        this.article.attitude = 0
+      } else {
+        // 点赞
+        await likings({ target: this.article.art_id })
+        this.article.attitude = 1
+      }
+      this.$toast.success((this.article.attitude === 1 ? '点赞' : '取消点赞') + '成功')
+    },
+
+    // 收藏或取消收藏文章函数
+    async handleCollectArticle () {
+      this.$toast.loading({
+        message: '操作中...',
+        forbidClick: true,
+        duration: 0,
+        loadingType: 'spinner'
+      })
+      if (this.article.is_collected) {
+        // 取消收藏
+        await cancelCollectArticle(this.article.art_id)
+      } else {
+        // 收藏
+        await collectArticle({ target: this.article.art_id })
+      }
+      this.$toast.success((this.article.is_collected ? '取消收藏' : '收藏') + '成功')
+      this.article.is_collected = !this.article.is_collected
+    },
+
     // 监听关注用户按钮点击
     async handleFollowBtnClick () {
-      this.loading = true
+      this.isFollowLoading = true
       const { aut_id: autId } = this.article
       if (this.article.is_followed) {
         // 已经关注了就取消关注
         await cancelFollowUser(autId)
-        this.article.is_followed = !this.article.is_followed
       } else {
         // 没有关注就关注
         await followUser({ target: autId })
-        this.article.is_followed = !this.article.is_followed
       }
-      this.loading = false
+      this.article.is_followed = !this.article.is_followed
+      this.isFollowLoading = false
     },
 
     // 获取文章详情
@@ -107,16 +172,6 @@ export default {
       try {
         const { data: response } = await getArticleDetail(this.articleId)
         this.article = response.data
-
-        /*
-          Vue中数据改变会影响视图(DOM数据)更新，但是不是立即的。
-
-          所以如果需要在修改数据之后马上操作被该数据影响的视图 DOM，
-          需要把这个代码放到$nextTick方法的回调函数中。
-
-          this.$nextTick是 Vue 提供的一个方法。
-
-        */
         this.$nextTick(_ => {
           this.handlePreviewImage()
         })
@@ -124,11 +179,6 @@ export default {
         console.log('error: ', error)
       }
     },
-    // 图片预览函数
-    // 1. 获取文章内容 DOM 容器
-    // 2. 得到所有的img标签
-    // 3. 循环img标签，给 img 注册点击事件
-    // 4. 在事件处理函数中调用 ImagePreview() 预览
     handlePreviewImage () {
       try {
         const articleContent = this.$refs['article-content']
@@ -155,6 +205,12 @@ export default {
 @import url('./github-markdown.css');
 
 .article-content {
+   position: fixed;
+   top: 46px;
+   left: 0;
+   right: 0;
+   bottom: 0;
+   overflow-y: auto;
   .title {
     font-size: 20px;
     color: #3a3a3a;
@@ -181,5 +237,28 @@ export default {
 .markdown-body {
   background-color: #fff;
   padding: 14px;
+}
+
+.article-bottom {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 44px;
+  border-top: 1px solid #cecece;
+  background-color: #fff;
+  .comment-btn {
+    width: 142px;
+    height: 23px;
+    font-size: 15px;
+    color: #848684;
+  }
+  .van-icon {
+    font-size: 20px;
+    color: #848684;
+  }
 }
 </style>
