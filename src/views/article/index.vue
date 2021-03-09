@@ -1,5 +1,5 @@
 <template>
-  <div class="article-container">
+  <div class="article-container" v-if="article">
     <!-- nav-bar部分 start -->
     <div class="nav-bar-wrap">
       <van-nav-bar title="文章详情" left-arrow @click-left="$router.back()" />
@@ -30,6 +30,8 @@
           :type="article.is_followed?'default':'info'"
           size="small"
           round
+          :loading="loading"
+          @click="handleFollowBtnClick"
           >{{article.is_followed?'已关注':'关注'}}</van-button
         >
       </van-cell>
@@ -53,6 +55,7 @@
 
 <script>
 import { getArticleDetail } from '@/api/article'
+import { cancelFollowUser, followUser } from '@/api/user'
 import { ImagePreview } from 'vant'
 
 /*
@@ -71,7 +74,8 @@ export default {
   },
   data () {
     return {
-      article: {} // 文章详情内容
+      loading: false, // 关注用户loading
+      article: null // 文章详情内容
     }
   },
   computed: {},
@@ -82,6 +86,22 @@ export default {
   mounted () {
   },
   methods: {
+    // 监听关注用户按钮点击
+    async handleFollowBtnClick () {
+      this.loading = true
+      const { aut_id: autId } = this.article
+      if (this.article.is_followed) {
+        // 已经关注了就取消关注
+        await cancelFollowUser(autId)
+        this.article.is_followed = !this.article.is_followed
+      } else {
+        // 没有关注就关注
+        await followUser({ target: autId })
+        this.article.is_followed = !this.article.is_followed
+      }
+      this.loading = false
+    },
+
     // 获取文章详情
     async loadArticleDetail () {
       try {
@@ -110,20 +130,22 @@ export default {
     // 3. 循环img标签，给 img 注册点击事件
     // 4. 在事件处理函数中调用 ImagePreview() 预览
     handlePreviewImage () {
-      const articleContent = this.$refs['article-content']
-      console.log(articleContent)
-      const imgs = articleContent.querySelectorAll('img')
-      console.log('imgs: ', imgs)
-      const imgPaths = [] // 收集所有的图片路径
-      imgs.forEach((item, index) => {
-        imgPaths.push(item.src)
-        item.onclick = function () {
-          ImagePreview({
-            images: imgPaths, // 预览图片路径列表
-            startPosition: index // 起始位置
-          })
-        }
-      })
+      try {
+        const articleContent = this.$refs['article-content']
+        const imgs = articleContent.querySelectorAll('img')
+        const imgPaths = [] // 收集所有的图片路径
+        imgs.forEach((item, index) => {
+          imgPaths.push(item.src)
+          item.onclick = function () {
+            ImagePreview({
+              images: imgPaths, // 预览图片路径列表
+              startPosition: index // 起始位置
+            })
+          }
+        })
+      } catch (error) {
+        console.log('error: ', error)
+      }
     }
   }
 }

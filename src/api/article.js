@@ -17,3 +17,37 @@ export const getArticleDetail = articleId => {
     method: 'GET'
   })
 }
+
+// 收藏文章
+export const collectArticle = data => {
+  return request({
+    url: '/app/v1_0/article/collections',
+    method: 'POST',
+    data
+  })
+}
+
+// 取消收藏文章
+export const cancelCollectArticle = articleId => {
+  return request({
+    url: `/app/v1_0/article/collections/${articleId}`,
+    method: 'DELETE'
+  })
+}
+
+// 对文章点赞
+export const likings = data => {
+  return request({
+    url: '/app/v1_0/article/likings',
+    method: 'POST',
+    data
+  })
+}
+
+// 取消对文章点赞
+export const cancelLike = articleId => {
+  return request({
+    url: `/app/v1_0/article/likings/${articleId}`,
+    method: 'DELETE'
+  })
+}
