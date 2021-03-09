@@ -10,13 +10,16 @@
     <div class="article-content">
       <!-- 文章标题 start -->
       <h1 class="title">
-        {{article.title}}
+        {{ article.title }}
       </h1>
+      <!-- 文章标题 end -->
 
       <!-- 用户信息 start -->
       <van-cell center class="user-info-wrap">
-        <div class="username" slot="title">{{article.aut_name}}</div>
-        <div class="pubdate" slot="label">{{article.pubdate | relativeTime}}</div>
+        <div class="username" slot="title">{{ article.aut_name }}</div>
+        <div class="pubdate" slot="label">
+          {{ article.pubdate | relativeTime }}
+        </div>
         <van-image
           slot="icon"
           class="avatar"
@@ -26,13 +29,13 @@
         />
         <van-button
           class="attention-btn"
-          :icon="article.is_followed?'':'plus'"
-          :type="article.is_followed?'default':'info'"
+          :icon="article.is_followed ? '' : 'plus'"
+          :type="article.is_followed ? 'default' : 'info'"
           size="small"
           round
           :loading="isFollowLoading"
           @click="handleFollowBtnClick"
-          >{{article.is_followed?'已关注':'关注'}}</van-button
+          >{{ article.is_followed ? "已关注" : "关注" }}</van-button
         >
       </van-cell>
       <!-- 用户信息 end -->
@@ -45,34 +48,29 @@
       ></div>
       <!-- 文章详细内容 end -->
 
-      <!-- 文章标题 end -->
+      <!-- 文章评论部分 start -->
+      <comment-list :source="article.art_id" />
+      <!-- 文章评论部分 end -->
     </div>
     <!-- 文章内容 end -->
 
     <!-- 文章底部内容 start -->
     <div class="article-bottom">
-      <van-button
-        class="comment-btn"
-        type="default"
-        round
+      <van-button class="comment-btn" type="default" round> 写评论 </van-button>
 
-      >
-        写评论
-      </van-button>
-
-      <van-icon name="comment-o" />
+      <van-icon name="comment-o" badge="2" />
 
       <van-icon
-      :name="article.is_collected?'star':'star-o'"
-      :color="article.is_collected?'#ffa500':''"
-      @click="handleCollectArticle"
+        :name="article.is_collected ? 'star' : 'star-o'"
+        :color="article.is_collected ? '#ffa500' : ''"
+        @click="handleCollectArticle"
       />
 
       <van-icon
-        :name="article.attitude===1?'good-job':'good-job-o'"
-        :color="article.attitude===1?'#3296fa':''"
+        :name="article.attitude === 1 ? 'good-job' : 'good-job-o'"
+        :color="article.attitude === 1 ? '#3296fa' : ''"
         @click="handleLikeClick"
-       />
+      />
 
       <van-icon name="share" />
     </div>
@@ -81,9 +79,16 @@
 </template>
 
 <script>
-import { getArticleDetail, collectArticle, cancelCollectArticle, likings, cancelLike } from '@/api/article'
+import {
+  getArticleDetail,
+  collectArticle,
+  cancelCollectArticle,
+  likings,
+  cancelLike
+} from '@/api/article'
 import { cancelFollowUser, followUser } from '@/api/user'
 import { ImagePreview } from 'vant'
+import commentList from './components/comment-list'
 
 /*
   在组件中获取动态路由参数：
@@ -92,7 +97,9 @@ import { ImagePreview } from 'vant'
 */
 export default {
   name: 'ArticleDetail',
-  components: {},
+  components: {
+    commentList
+  },
   props: {
     articleId: {
       type: [Object, String, Number],
@@ -110,8 +117,7 @@ export default {
   created () {
     this.loadArticleDetail()
   },
-  mounted () {
-  },
+  mounted () {},
   methods: {
     // 给文章点赞或者取消点赞操作
     async handleLikeClick () {
@@ -130,7 +136,9 @@ export default {
         await likings({ target: this.article.art_id })
         this.article.attitude = 1
       }
-      this.$toast.success((this.article.attitude === 1 ? '点赞' : '取消点赞') + '成功')
+      this.$toast.success(
+        (this.article.attitude === 1 ? '' : '取消') + '点赞成功'
+      )
     },
 
     // 收藏或取消收藏文章函数
@@ -148,7 +156,9 @@ export default {
         // 收藏
         await collectArticle({ target: this.article.art_id })
       }
-      this.$toast.success((this.article.is_collected ? '取消收藏' : '收藏') + '成功')
+      this.$toast.success(
+        (this.article.is_collected ? '取消' : '') + '收藏成功'
+      )
       this.article.is_collected = !this.article.is_collected
     },
 
@@ -172,7 +182,7 @@ export default {
       try {
         const { data: response } = await getArticleDetail(this.articleId)
         this.article = response.data
-        this.$nextTick(_ => {
+        this.$nextTick((_) => {
           this.handlePreviewImage()
         })
       } catch (error) {
@@ -202,15 +212,15 @@ export default {
 </script>
 
 <style scoped lang="less">
-@import url('./github-markdown.css');
+@import url("./github-markdown.css");
 
 .article-content {
-   position: fixed;
-   top: 46px;
-   left: 0;
-   right: 0;
-   bottom: 0;
-   overflow-y: auto;
+  position: fixed;
+  top: 46px;
+  left: 0;
+  right: 0;
+  bottom: 44px;
+  overflow-y: auto;
   .title {
     font-size: 20px;
     color: #3a3a3a;
@@ -229,7 +239,8 @@ export default {
       width: 35px;
       height: 35px;
     }
-    .username,.pubdate {
+    .username,
+    .pubdate {
       font-size: 12px;
     }
   }
