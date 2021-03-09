@@ -36,7 +36,11 @@
       <!-- 用户信息 end -->
 
       <!-- 文章详细内容 start -->
-      <div class="markdown-body" v-html="article.content">
+      <div
+        class="markdown-body"
+        v-html="article.content"
+        ref="article-content"
+      >
 
       </div>
       <!-- 文章详细内容 end -->
@@ -49,6 +53,8 @@
 
 <script>
 import { getArticleDetail } from '@/api/article'
+import { ImagePreview } from 'vant'
+
 /*
   在组件中获取动态路由参数：
     方式一：this.$route.params.articleId
@@ -71,16 +77,53 @@ export default {
   computed: {},
   watch: {},
   created () {
-    console.log('article id ', this.articleId)
     this.loadArticleDetail()
   },
-  mounted () {},
+  mounted () {
+  },
   methods: {
     // 获取文章详情
     async loadArticleDetail () {
-      const { data: response } = await getArticleDetail(this.articleId)
-      console.log('get artilce response: ', response)
-      this.article = response.data
+      try {
+        const { data: response } = await getArticleDetail(this.articleId)
+        this.article = response.data
+
+        /*
+          Vue中数据改变会影响视图(DOM数据)更新，但是不是立即的。
+
+          所以如果需要在修改数据之后马上操作被该数据影响的视图 DOM，
+          需要把这个代码放到$nextTick方法的回调函数中。
+
+          this.$nextTick是 Vue 提供的一个方法。
+
+        */
+        this.$nextTick(_ => {
+          this.handlePreviewImage()
+        })
+      } catch (error) {
+        console.log('error: ', error)
+      }
+    },
+    // 图片预览函数
+    // 1. 获取文章内容 DOM 容器
+    // 2. 得到所有的img标签
+    // 3. 循环img标签，给 img 注册点击事件
+    // 4. 在事件处理函数中调用 ImagePreview() 预览
+    handlePreviewImage () {
+      const articleContent = this.$refs['article-content']
+      console.log(articleContent)
+      const imgs = articleContent.querySelectorAll('img')
+      console.log('imgs: ', imgs)
+      const imgPaths = [] // 收集所有的图片路径
+      imgs.forEach((item, index) => {
+        imgPaths.push(item.src)
+        item.onclick = function () {
+          ImagePreview({
+            images: imgPaths, // 预览图片路径列表
+            startPosition: index // 起始位置
+          })
+        }
+      })
     }
   }
 }

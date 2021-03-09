@@ -14,5 +14,5 @@ dayjs.locale('zh-cn')
 
 // 注册全局过滤器，处理相对时间
 Vue.filter('relativeTime', value => {
-  return dayjs().from(dayjs(value))
+  return dayjs(value).from(dayjs())
 })
