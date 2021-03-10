@@ -49,7 +49,7 @@
       <!-- 文章详细内容 end -->
 
       <!-- 文章评论部分 start -->
-      <comment-list :source="article.art_id" />
+      <comment-list :source="article.art_id.toString()" />
       <!-- 文章评论部分 end -->
     </div>
     <!-- 文章内容 end -->
@@ -180,7 +180,7 @@ export default {
     // 获取文章详情
     async loadArticleDetail () {
       try {
-        const { data: response } = await getArticleDetail(this.articleId)
+        const { data: response } = await getArticleDetail(this.articleId.toString())
         this.article = response.data
         this.$nextTick((_) => {
           this.handlePreviewImage()
