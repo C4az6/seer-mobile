@@ -52,6 +52,7 @@
       <comment-list
       :source="article.art_id.toString()"
       :comment="comment"
+      @loadFinished="commentTotalCount=$event"
        />
       <!-- 文章评论部分 end -->
     </div>
@@ -66,7 +67,7 @@
       @click="pubCommentShow = !pubCommentShow"
       > 写评论 </van-button>
 
-      <van-icon name="comment-o" badge="2" />
+      <van-icon name="comment-o" :badge="commentTotalCount" />
 
       <van-icon
         :name="article.is_collected ? 'star' : 'star-o'"
@@ -128,6 +129,7 @@ export default {
   },
   data () {
     return {
+      commentTotalCount: 0,
       comment: {}, // 文章评论数据对象
       pubCommentShow: false, // 发布评论弹出层是否显示
       isFollowLoading: false, // 关注用户loading
@@ -152,8 +154,8 @@ export default {
         })
         this.$toast.success('评论发布成功!')
         this.pubCommentShow = false
-        console.log(response)
         this.comment = response.data.new_obj
+        this.commentTotalCount++
         // 在数组的前方插入添加的评论数据
       } catch (error) {
         console.log('评论失败!', error)

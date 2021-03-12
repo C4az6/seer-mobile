@@ -28,8 +28,8 @@ export default {
   },
   props: {
     comment: { // 评论数据
-      type: [Object],
-      required: false
+      type: Object,
+      default: () => {}
     },
     source: {
       // 评论ID或者文章ID
@@ -66,9 +66,9 @@ export default {
           offset: this.params.offset,
           limit: 10
         })
-        console.log('comment list response : ', response)
         this.commentList = [...this.commentList, ...response.data.results]
         this.loading = false
+        this.$emit('loadFinished', response.data.total_count)
         if (!response.data.results.length) {
           this.finished = true
         } else {
