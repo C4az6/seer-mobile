@@ -54,6 +54,5 @@ export default {
 .publish-btn {
   width: 50px;
   height: 22px;
-  // color: #999999;
 }
 </style>

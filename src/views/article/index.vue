@@ -50,11 +50,11 @@
 
       <!-- 文章评论部分 start -->
       <comment-list
-      :source="article.art_id.toString()"
-      :comment="comment"
-      @loadFinished="commentTotalCount=$event"
-      @reply-click="handleReplyClick"
-       />
+        :source="article.art_id.toString()"
+        :comment="comment"
+        @loadFinished="commentTotalCount = $event"
+        @reply-click="handleReplyClick"
+      />
       <!-- 文章评论部分 end -->
     </div>
     <!-- 文章内容 end -->
@@ -62,11 +62,13 @@
     <!-- 文章底部内容 start -->
     <div class="article-bottom">
       <van-button
-      class="comment-btn"
-      type="default"
-      round
-      @click="pubCommentShow = !pubCommentShow"
-      > 写评论 </van-button>
+        class="comment-btn"
+        type="default"
+        round
+        @click="pubCommentShow = !pubCommentShow"
+      >
+        写评论
+      </van-button>
 
       <van-icon name="comment-o" :badge="commentTotalCount" />
 
@@ -87,22 +89,16 @@
     <!-- 文章底部内容 end -->
 
     <!-- 发布评论弹出层组件 start -->
-    <van-popup
-    v-model="pubCommentShow"
-    position="bottom"
-    >
-    <comment-publish @publish="handlePublishComment" />
+    <van-popup v-model="pubCommentShow" position="bottom">
+      <comment-publish @publish="handlePublishComment" />
     </van-popup>
     <!-- 发布评论弹出层组件 end -->
 
     <!-- 回复评论弹出层组件 start -->
-    <van-popup
-      v-model="replyCommentShow"
-      position="bottom"
-      >
+    <van-popup v-model="replyCommentShow" position="bottom">
       <comment-reply
-      @close="replyCommentShow = false"
-      :comment="replyComment"
+        @close="replyCommentShow = false"
+        :comment="replyComment"
       />
     </van-popup>
     <!-- 回复评论弹出层组件 end -->
@@ -145,7 +141,7 @@ export default {
   data () {
     return {
       replyComment: {},
-      replyCommentShow: true, // 回复评论弹出层是否显示
+      replyCommentShow: false, // 回复评论弹出层是否显示
       commentTotalCount: 0,
       comment: {}, // 文章评论数据对象
       pubCommentShow: false, // 发布评论弹出层是否显示
@@ -161,11 +157,10 @@ export default {
   mounted () {},
   methods: {
     // 回复评论点击事件
-    handleReplyClick ($) {
-      console.log('回复评论.', $)
+    handleReplyClick ($event) {
       // 开启回复评论的弹出层
       this.replyCommentShow = true
-      this.replyComment = $
+      this.replyComment = $event
     },
 
     // 发布评论
@@ -238,7 +233,9 @@ export default {
     // 获取文章详情
     async loadArticleDetail () {
       try {
-        const { data: response } = await getArticleDetail(this.articleId.toString())
+        const { data: response } = await getArticleDetail(
+          this.articleId.toString()
+        )
         this.article = response.data
         this.$nextTick((_) => {
           this.handlePreviewImage()

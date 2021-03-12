@@ -37,7 +37,7 @@ export const cancelCommentLike = commentId => {
 // 添加评论或评论回复
 /*
   对文章评论不需要传递 art_id;
-  对评论进行评论则需要传递 art_id;
+  对评论进行评论则需要传递 art_id
 */
 export const addComment = data => {
   return request({

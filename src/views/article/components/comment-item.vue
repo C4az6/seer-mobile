@@ -52,12 +52,7 @@ export default {
   methods: {
     // 对评论或者评论回复进行点赞
     async onCommentLike () {
-      this.$toast.loading({
-        message: '操作中...',
-        duration: 0,
-        forbidClick: true,
-        loadingType: 'spinner'
-      })
+      this.$loading()
       try {
         const commentId = this.comment.com_id.toString()
         if (this.comment.is_liking) {

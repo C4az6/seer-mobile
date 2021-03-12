@@ -36,6 +36,12 @@ export default {
       // 评论ID或者文章ID
       type: [Object, String, Number],
       required: true
+    },
+    // 获取文章评论，使用字符 a
+    // 获取评论回复，使用字符 c
+    type: {
+      type: String,
+      default: 'a' // 不传type默认就是 a
     }
   },
   data () {
@@ -64,8 +70,8 @@ export default {
     async onLoad () {
       try {
         const { data: response } = await getCommentlist({
-          type: 'a', // a：对文章进行评论，c：对评论进行回复
-          source: this.source, // 文章ID或者评论ID
+          type: this.type, // a：获取对文章评论的数据列表，c：对评论进行回复
+          source: this.source.toString(), // 文章ID或者评论ID
           offset: this.params.offset,
           limit: 10
         })
