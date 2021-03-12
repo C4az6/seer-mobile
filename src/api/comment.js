@@ -14,3 +14,22 @@ export const getCommentlist = (params, data) => {
     data
   })
 }
+
+// 对评论或评论回复点赞
+export const addCommentLike = commentId => {
+  return request({
+    url: '/app/v1_0/comment/likings',
+    method: 'POST',
+    data: {
+      target: commentId
+    }
+  })
+}
+
+// 取消对评论或评论回复点赞
+export const cancelCommentLike = commentId => {
+  return request({
+    url: `/app/v1_0/comment/likings/${commentId}`,
+    method: 'DELETE'
+  })
+}

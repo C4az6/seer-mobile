@@ -8,7 +8,11 @@
       @load="onLoad"
     >
     <!-- 评论项组件 start -->
-    <comment-item v-for="(item, index) in commentList" :key="index" :comment="item"  />
+    <comment-item
+    v-for="(item, index) in commentList"
+    :key="index"
+    :comment="item"
+    />
     <!-- 评论项组件 end -->
     </van-list>
   </div>
@@ -45,6 +49,7 @@ export default {
   created () {},
   mounted () {},
   methods: {
+    // 加载评论列表数据
     async onLoad () {
       try {
         const { data: response } = await getCommentlist({
