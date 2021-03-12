@@ -7,18 +7,24 @@
       finished-text="没有更多了"
       @load="onLoad"
     >
-    <van-cell v-for="(item, index) in commentList" :key="index" :title="item.aut_name" />
+      <div v-for="(item, index) in commentList" :key="index">
+        <comment-item :comment="item"  />
+      </div>
     </van-list>
   </div>
 </template>
 
 <script>
 import { getCommentlist } from '@/api/comment'
+import CommentItem from './comment-item'
 export default {
   name: 'CommentList',
-  components: {},
+  components: {
+    CommentItem
+  },
   props: {
-    source: { // 评论ID或者文章ID
+    source: {
+      // 评论ID或者文章ID
       type: [Object, String, Number],
       required: true
     }
@@ -28,7 +34,8 @@ export default {
       commentList: [], // 评论列表
       loading: false,
       finished: false,
-      params: { // 获取评论列表参数
+      params: {
+        // 获取评论列表参数
         offset: null
       }
     }
@@ -47,14 +54,7 @@ export default {
           limit: 10
         })
         console.log('comment list response : ', response)
-        const comments = response.data.results.map(item => {
-          // join用于连接数组中的字符串，默认用逗号连接
-          // return item.pubdate = item.pubdate.split('T').join(' ')
-          item.pubdate = item.pubdate.replace('T', ' ')
-          return item
-        })
-        console.log('comments: ', comments)
-        this.commentList = [...this.commentList, ...comments]
+        this.commentList = [...this.commentList, ...response.data.results]
         this.loading = false
         if (!response.data.results.length) {
           this.finished = true
