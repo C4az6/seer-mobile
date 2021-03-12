@@ -49,14 +49,22 @@
       <!-- 文章详细内容 end -->
 
       <!-- 文章评论部分 start -->
-      <comment-list :source="article.art_id.toString()" />
+      <comment-list
+      :source="article.art_id.toString()"
+      :comment="comment"
+       />
       <!-- 文章评论部分 end -->
     </div>
     <!-- 文章内容 end -->
 
     <!-- 文章底部内容 start -->
     <div class="article-bottom">
-      <van-button class="comment-btn" type="default" round> 写评论 </van-button>
+      <van-button
+      class="comment-btn"
+      type="default"
+      round
+      @click="pubCommentShow = !pubCommentShow"
+      > 写评论 </van-button>
 
       <van-icon name="comment-o" badge="2" />
 
@@ -75,6 +83,15 @@
       <van-icon name="share" />
     </div>
     <!-- 文章底部内容 end -->
+
+    <!-- 发布评论弹出层组件 start -->
+    <van-popup
+    v-model="pubCommentShow"
+    position="bottom"
+    >
+    <comment-publish @publish="handlePublishComment" />
+    </van-popup>
+    <!-- 发布评论弹出层组件 end -->
   </div>
 </template>
 
@@ -87,9 +104,11 @@ import {
   cancelLike
 } from '@/api/article'
 import { cancelFollowUser, followUser } from '@/api/user'
+import { addComment } from '@/api/comment'
 import { ImagePreview } from 'vant'
 import commentList from './components/comment-list'
-
+import CommentPublish from './components/comment-publish'
+import { loading } from '@/utils/common'
 /*
   在组件中获取动态路由参数：
     方式一：this.$route.params.articleId
@@ -98,7 +117,8 @@ import commentList from './components/comment-list'
 export default {
   name: 'ArticleDetail',
   components: {
-    commentList
+    commentList,
+    CommentPublish
   },
   props: {
     articleId: {
@@ -108,6 +128,8 @@ export default {
   },
   data () {
     return {
+      comment: {}, // 文章评论数据对象
+      pubCommentShow: false, // 发布评论弹出层是否显示
       isFollowLoading: false, // 关注用户loading
       article: null // 文章详情内容
     }
@@ -119,14 +141,28 @@ export default {
   },
   mounted () {},
   methods: {
+    // 发布评论
+    async handlePublishComment (content) {
+      loading()
+      try {
+        const { data: response } = await addComment({
+          target: this.articleId,
+          content,
+          art_id: null
+        })
+        this.$toast.success('评论发布成功!')
+        this.pubCommentShow = false
+        console.log(response)
+        this.comment = response.data.new_obj
+        // 在数组的前方插入添加的评论数据
+      } catch (error) {
+        console.log('评论失败!', error)
+      }
+    },
+
     // 给文章点赞或者取消点赞操作
     async handleLikeClick () {
-      this.$toast.loading({
-        message: '操作中...',
-        forbidClick: true,
-        duration: 0,
-        loadingType: 'spinner'
-      })
+      loading()
       if (this.article.attitude === 1) {
         // 取消点赞
         await cancelLike(this.article.art_id)
@@ -143,12 +179,7 @@ export default {
 
     // 收藏或取消收藏文章函数
     async handleCollectArticle () {
-      this.$toast.loading({
-        message: '操作中...',
-        forbidClick: true,
-        duration: 0,
-        loadingType: 'spinner'
-      })
+      loading()
       if (this.article.is_collected) {
         // 取消收藏
         await cancelCollectArticle(this.article.art_id)

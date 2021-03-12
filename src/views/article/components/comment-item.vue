@@ -56,27 +56,26 @@ export default {
         loadingType: 'spinner'
       })
       try {
+        const commentId = this.comment.com_id.toString()
         if (this.comment.is_liking) {
           // 取消点赞
-          await cancelCommentLike(this.comment.com_id.toString())
-          this.$toast.success('取消点赞成功!')
-          this.comment.is_liking = false
+          await cancelCommentLike(commentId)
           this.comment.like_count--
         } else {
           // 点赞
-          await addCommentLike(this.comment.com_id.toString())
-          this.$toast.success('点赞成功!')
-          this.comment.is_liking = true
+          await addCommentLike(commentId)
           this.comment.like_count++
         }
+        // 更新点赞状态
+        this.comment.is_liking = !this.comment.is_liking
+        this.$toast.success({
+          type: 'success',
+          message: `${this.comment.is_liking ? '' : '取消'}点赞成功`
+        })
       } catch (error) {
         console.log('点赞失败:', error)
         this.$toast.fail('服务器异常,点赞失败!')
       }
-      this.$toast.success({
-        type: 'success',
-        message: `${this.comment.is_liking ? '' : '取消'}点赞成功`
-      })
       this.$toast.clear()
     }
   }

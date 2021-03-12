@@ -27,6 +27,10 @@ export default {
     CommentItem
   },
   props: {
+    comment: { // 评论数据
+      type: [Object],
+      required: false
+    },
     source: {
       // 评论ID或者文章ID
       type: [Object, String, Number],
@@ -45,7 +49,11 @@ export default {
     }
   },
   computed: {},
-  watch: {},
+  watch: {
+    comment () {
+      this.commentList.unshift(this.comment)
+    }
+  },
   created () {},
   mounted () {},
   methods: {
