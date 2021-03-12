@@ -100,7 +100,10 @@
       v-model="replyCommentShow"
       position="bottom"
       >
-      <comment-reply />
+      <comment-reply
+      @close="replyCommentShow = false"
+      :comment="replyComment"
+      />
     </van-popup>
     <!-- 回复评论弹出层组件 end -->
   </div>
@@ -141,7 +144,8 @@ export default {
   },
   data () {
     return {
-      replyCommentShow: false, // 回复评论弹出层是否显示
+      replyComment: {},
+      replyCommentShow: true, // 回复评论弹出层是否显示
       commentTotalCount: 0,
       comment: {}, // 文章评论数据对象
       pubCommentShow: false, // 发布评论弹出层是否显示
@@ -161,6 +165,7 @@ export default {
       console.log('回复评论.', $)
       // 开启回复评论的弹出层
       this.replyCommentShow = true
+      this.replyComment = $
     },
 
     // 发布评论
