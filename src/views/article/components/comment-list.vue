@@ -12,6 +12,7 @@
     v-for="(item, index) in commentList"
     :key="index"
     :comment="item"
+    @reply-click="$emit('reply-click', $event)"
     />
     <!-- 评论项组件 end -->
     </van-list>
@@ -54,7 +55,9 @@ export default {
       this.commentList.unshift(this.comment)
     }
   },
-  created () {},
+  created () {
+    this.onLoad()
+  },
   mounted () {},
   methods: {
     // 加载评论列表数据

@@ -53,6 +53,7 @@
       :source="article.art_id.toString()"
       :comment="comment"
       @loadFinished="commentTotalCount=$event"
+      @reply-click="handleReplyClick"
        />
       <!-- 文章评论部分 end -->
     </div>
@@ -93,6 +94,15 @@
     <comment-publish @publish="handlePublishComment" />
     </van-popup>
     <!-- 发布评论弹出层组件 end -->
+
+    <!-- 回复评论弹出层组件 start -->
+    <van-popup
+      v-model="replyCommentShow"
+      position="bottom"
+      >
+      <comment-reply />
+    </van-popup>
+    <!-- 回复评论弹出层组件 end -->
   </div>
 </template>
 
@@ -110,6 +120,7 @@ import { ImagePreview } from 'vant'
 import commentList from './components/comment-list'
 import CommentPublish from './components/comment-publish'
 import { loading } from '@/utils/common'
+import CommentReply from './components/comment-reply'
 /*
   在组件中获取动态路由参数：
     方式一：this.$route.params.articleId
@@ -119,7 +130,8 @@ export default {
   name: 'ArticleDetail',
   components: {
     commentList,
-    CommentPublish
+    CommentPublish,
+    CommentReply
   },
   props: {
     articleId: {
@@ -129,6 +141,7 @@ export default {
   },
   data () {
     return {
+      replyCommentShow: false, // 回复评论弹出层是否显示
       commentTotalCount: 0,
       comment: {}, // 文章评论数据对象
       pubCommentShow: false, // 发布评论弹出层是否显示
@@ -143,6 +156,13 @@ export default {
   },
   mounted () {},
   methods: {
+    // 回复评论点击事件
+    handleReplyClick ($) {
+      console.log('回复评论.', $)
+      // 开启回复评论的弹出层
+      this.replyCommentShow = true
+    },
+
     // 发布评论
     async handlePublishComment (content) {
       loading()

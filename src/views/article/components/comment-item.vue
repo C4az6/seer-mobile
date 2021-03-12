@@ -18,8 +18,11 @@
         </div>
         <div class="pubdate-wrap">
           <span class="pubdate">{{ comment.pubdate | formatTime('MM-DD HH:mm') }}</span>
-          <van-button class="repay-btn" round size="mini"
-            >{{ comment.reply_count }} 回复</van-button
+          <van-button
+          class="reply-btn"
+          round size="mini"
+          @click="$emit('reply-click', comment)"
+          >{{ comment.reply_count }} 回复</van-button
           >
         </div>
       </div>
@@ -33,7 +36,7 @@ export default {
   name: 'CommentItem',
   components: {},
   props: {
-    // 单一项的评论数据对象
+    // 单项的评论数据对象
     comment: {
       type: Object,
       required: true
@@ -106,7 +109,7 @@ export default {
     margin-right: 15px;
     font-size: 12px;
   }
-  .repay-btn {
+  .reply-btn {
     width: 52px;
     height: 22px;
   }
