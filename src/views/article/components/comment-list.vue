@@ -7,9 +7,9 @@
       finished-text="没有更多了"
       @load="onLoad"
     >
-      <div v-for="(item, index) in commentList" :key="index">
-        <comment-item :comment="item"  />
-      </div>
+    <!-- 评论项组件 start -->
+    <comment-item v-for="(item, index) in commentList" :key="index" :comment="item"  />
+    <!-- 评论项组件 end -->
     </van-list>
   </div>
 </template>

@@ -17,7 +17,7 @@
           {{ comment.content }}
         </div>
         <div class="pubdate-wrap">
-          <span class="pubdate">{{ comment.pubdate }}</span>
+          <span class="pubdate">{{ comment.pubdate | formatTime('MM-DD HH:mm') }}</span>
           <van-button class="repay-btn" round size="mini"
             >{{ comment.reply_count }} 回复</van-button
           >
@@ -70,6 +70,7 @@ export default {
   align-items: center;
   .pubdate {
     margin-right: 15px;
+    font-size: 12px;
   }
   .repay-btn {
     width: 52px;
